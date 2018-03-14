@@ -153,7 +153,7 @@ public class masterManager : MonoBehaviour {
 
             if ((progressValue ==50)  && (prevFrame != 50))// or interval
         {
-            Debug.Log("------------------------------------>Something Happens");
+            Debug.Log("50------------------------------------>Something Happens");
             /* event
              * 
                 play event audio ance
