@@ -209,8 +209,8 @@ class OcclusionCullingData;
 class PhysicMaterial; 
 class PhysicsMaterial2D; 
 class PreloadData; template <> void RegisterClass<PreloadData>();
-class RuntimeAnimatorController; 
-class AnimatorController; 
+class RuntimeAnimatorController; template <> void RegisterClass<RuntimeAnimatorController>();
+class AnimatorController; template <> void RegisterClass<AnimatorController>();
 class AnimatorOverrideController; 
 class SampleClip; template <> void RegisterClass<SampleClip>();
 class AudioClip; template <> void RegisterClass<AudioClip>();
@@ -275,7 +275,7 @@ void RegisterAllClasses()
 {
 void RegisterBuiltinTypes();
 RegisterBuiltinTypes();
-	//Total: 75 non stripped classes
+	//Total: 77 non stripped classes
 	//0. Behaviour
 	RegisterClass<Behaviour>();
 	//1. Unity::Component
@@ -406,25 +406,29 @@ RegisterBuiltinTypes();
 	RegisterClass<AudioManager>();
 	//64. Physics2DSettings
 	RegisterClass<Physics2DSettings>();
-	//65. FlareLayer
+	//65. RuntimeAnimatorController
+	RegisterClass<RuntimeAnimatorController>();
+	//66. AnimatorController
+	RegisterClass<AnimatorController>();
+	//67. FlareLayer
 	RegisterClass<FlareLayer>();
-	//66. LightProbes
+	//68. LightProbes
 	RegisterClass<LightProbes>();
-	//67. RenderSettings
+	//69. RenderSettings
 	RegisterClass<RenderSettings>();
-	//68. LevelGameManager
+	//70. LevelGameManager
 	RegisterClass<LevelGameManager>();
-	//69. BoxCollider
+	//71. BoxCollider
 	RegisterClass<BoxCollider>();
-	//70. LightmapSettings
+	//72. LightmapSettings
 	RegisterClass<LightmapSettings>();
-	//71. AnimationClip
+	//73. AnimationClip
 	RegisterClass<AnimationClip>();
-	//72. Motion
+	//74. Motion
 	RegisterClass<Motion>();
-	//73. Light
+	//75. Light
 	RegisterClass<Light>();
-	//74. Animation
+	//76. Animation
 	RegisterClass<Animation>();
 
 }
