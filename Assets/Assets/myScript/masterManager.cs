@@ -3,135 +3,96 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
 public class masterManager : MonoBehaviour {
-
     // Use this for initialization
     public int progressValue;
-
-
     public GameObject controller;
-
     public Text dialogText;
     public Text debugText;
-
     public GameObject track;
     public GameObject audioIntro;
     public GameObject audioStart;
     public GameObject audioFinish;
     public GameObject audioEvtStart;
     public GameObject audioEvtFinish;
-
     public GameObject objIntro;
     public GameObject objStart;
     public GameObject objFinish;
-
     public string textIntro;
     public string textStart;
     public string textFinish;
-
     public Transform target;
     public float speed;
-
     public float period = .01f;
-
+    public float motionAccumulation = .0f;
     public int prevFrame = -1;
-
-
-
+    public Vector3 accel;
+    public Vector3 prevAccel;
     Renderer[] currentRenderers;
-
-	void Start () {
+    void Start () {
         progressValue = 0; //0 to 100
-
         var currentAudio = audioIntro;
-
-
-        Vector3 accel;
-        Vector3 prevAccel;
-
-
         AudioSource audio = currentAudio.GetComponent<AudioSource>();
         audio.Play();
         //audio.Play(44100);
         dialogText.text = textIntro;
         debugText.text = "go";
-        StartCoroutine("DoCheck");	
-
+        StartCoroutine("DoCheck");    
         hideObj(objStart);
         showObj(objIntro);
         hideObj(objFinish);
-	}
-
+    }
     void killAudio(GameObject aud ){
         AudioSource audio = aud.GetComponent<AudioSource>();
         audio.Stop();
     }
-
     void PlayAudio(GameObject aud)
     {
         AudioSource audio = aud.GetComponent<AudioSource>();
         audio.Play();
         audio.Play(44100);
     }
-
     void showObj(GameObject mc)
     {
         
         currentRenderers = mc.GetComponentsInChildren<Renderer>();
         SetRendererEnabled(true);
     }
-
     void hideObj(GameObject mc)
     {
         currentRenderers = mc.GetComponentsInChildren<Renderer>();
         SetRendererEnabled(false);
     }
-
-
     private void SetRendererEnabled(bool enableRenderer)
     {
-
         for (int x = 0; x < currentRenderers.Length; x++)
             currentRenderers[x].enabled = enableRenderer;
     }
-
-	
+    
     IEnumerator DoCheck()
     {
         for (; ; )
         {
             // execute block of code here
             //Debug.Log("tick");
-
              if(progressValue<100){
                 if(controller.GetComponent<DebugMiraController>().isClickedflag == true){
-
-                    progressValue++;
+                    //progressValue++;
                 }
             
             }
             yield return new WaitForSeconds(.2f);
         }
     }
-
  
-
-	// Update is called once per frame
-	void Update () {
-
-
-
+    // Update is called once per frame
+    void Update () {
         var accel = controller.GetComponent<DebugMiraController>().accelDirection;
            
-
         //float step = speed * progressValue;
         //track.transform.position = Vector3.MoveTowards(track.transform.position, target.position, step);
         track.transform.position = new Vector3(0, 0, (-230 -(progressValue *1.7f))   );
-
-
-        debugText.text = progressValue.ToString();
-
+        //debugText.text = progressValue.ToString();
         if ((progressValue ==1) && (prevFrame !=1))
         {
             prevFrame = progressValue;
@@ -147,17 +108,11 @@ public class masterManager : MonoBehaviour {
             hideObj(objStart);
             showObj(objIntro);
             hideObj(objFinish);
-
             killAudio(audioStart);
             killAudio(audioFinish);
             PlayAudio(audioIntro);
             PlayAudio(audioEvtStart);
-
-
             dialogText.text = textIntro;
-
-
-
         }
         if ((progressValue == 3) && (prevFrame != 3))
         {
@@ -177,21 +132,16 @@ public class masterManager : MonoBehaviour {
                 show start go
             */
             Debug.Log("------------------------------------>start");
-
             showObj(objStart);
             hideObj(objFinish);
             //hideObj(objIntro);
-
             prevFrame = progressValue;
             killAudio(audioIntro);
             killAudio(audioFinish);
           
             PlayAudio(audioEvtStart);
             dialogText.text = textStart;
-
         }
-
-
         if ((progressValue == 11) && (prevFrame != 11))
         {
             /* Start  
@@ -201,13 +151,9 @@ public class masterManager : MonoBehaviour {
                 hide all go
                 show start go
             */
-
             prevFrame = progressValue;
             PlayAudio(audioStart);
-
-
         }
-
             if ((progressValue ==40)  && (prevFrame != 40))// or interval
         {
             Debug.Log("------------------------------------>Something Happens");
@@ -216,14 +162,10 @@ public class masterManager : MonoBehaviour {
                 play event audio ance
                 hide all go
                 show event go
-
             */
-
             prevFrame = progressValue;
             dialogText.text = "Watch Out for the car!!";
-
         }
-
         if ((progressValue == 39) && (prevFrame != 39))// or interval
         {
             Debug.Log("------------------------------------>Something Happens");
@@ -232,23 +174,15 @@ public class masterManager : MonoBehaviour {
                 play event audio ance
                 hide all go
                 show event go
-
             */
-
             prevFrame = progressValue;
             dialogText.text = "Watch Out for the car!!";
-
         }
         if ((progressValue == 44) && (prevFrame != 44))// or interval
         {
-
             prevFrame = progressValue;
             dialogText.text = "";
-
         }
-
-
-
                 if ((progressValue == 99) && (prevFrame != 99))
         {
             Debug.Log("------------------------------------>Finish");
@@ -257,11 +191,9 @@ public class masterManager : MonoBehaviour {
             killAudio(audioStart);
             PlayAudio(audioFinish);
             PlayAudio(audioEvtFinish);
-
             hideObj(objIntro);
             hideObj(objStart);
             showObj(objFinish);
-
             dialogText.text = textFinish;
             /* Finish 
              * 
@@ -270,33 +202,19 @@ public class masterManager : MonoBehaviour {
                 show finish sequence once
             */
         }
-
-
-
-
-
-        float kEraseAccelerationThreshold = 2.0f;
-
-
-        var y = accel.y;
-
-        var length = Mathf.Sqrt(y * y);
-
-        //debugText.text = kEraseAccelerationThreshold.ToString();
-
-      
-       // debugText.text = controller.GetComponent<DebugMiraController>().isClickedflag.ToString();
-
-		
-	}
-
-
+        var diff = getAbs(getAbs(prevAccel.x) - getAbs(accel.x))  + 
+            (getAbs(getAbs(prevAccel.y) - getAbs(accel.y))) + (getAbs(getAbs(prevAccel.z) - getAbs(accel.z)));
+        motionAccumulation += diff;
+        prevAccel = accel;
+        debugText.text = motionAccumulation.ToString();
+        progressValue = Mathf.RoundToInt(motionAccumulation / 20);
+        
+    }
+    public float getAbs(float val){
+        return Mathf.Sqrt(val * val);
+    }
     public void OnSubmit()
-
     {
         //debugText.text = controller.isClickedflag;
     }
-
-
-
 }
