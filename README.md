@@ -8,6 +8,8 @@ Built with the Mira Prism, Unity and Xcode.
 
 ![Screenshot](https://i.imgur.com/kUv1QPb.gif)
 
+![Screenshot](https://i.imgur.com/Wnv5YR3.gif)
+
 ![Screenshot](https://i.imgur.com/tDNlX4z.png)
 
 ![Screenshot](https://i.imgur.com/gQ4mV0V.jpg)
