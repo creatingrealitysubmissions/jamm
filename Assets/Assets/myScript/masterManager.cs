@@ -10,6 +10,7 @@ public class masterManager : MonoBehaviour {
     public int progressValue;
 
 
+    public GameObject controller;
 
     public Text dialogText;
     public Text debugText;
@@ -18,7 +19,8 @@ public class masterManager : MonoBehaviour {
     public GameObject audioIntro;
     public GameObject audioStart;
     public GameObject audioFinish;
-    public GameObject audioEvent;
+    public GameObject audioEvtStart;
+    public GameObject audioEvtFinish;
 
     public GameObject objIntro;
     public GameObject objStart;
@@ -33,7 +35,9 @@ public class masterManager : MonoBehaviour {
 
     public float period = .01f;
 
-    int prevFrame = -1; 
+    public int prevFrame = -1;
+
+
 
     Renderer[] currentRenderers;
 
@@ -42,12 +46,21 @@ public class masterManager : MonoBehaviour {
 
         var currentAudio = audioIntro;
 
+
+        Vector3 accel;
+        Vector3 prevAccel;
+
+
         AudioSource audio = currentAudio.GetComponent<AudioSource>();
         audio.Play();
         //audio.Play(44100);
         dialogText.text = textIntro;
         debugText.text = "go";
         StartCoroutine("DoCheck");	
+
+        hideObj(objStart);
+        showObj(objIntro);
+        hideObj(objFinish);
 	}
 
     void killAudio(GameObject aud ){
@@ -90,7 +103,14 @@ public class masterManager : MonoBehaviour {
         {
             // execute block of code here
             //Debug.Log("tick");
-            progressValue++;
+
+             if(progressValue<100){
+                if(controller.GetComponent<DebugMiraController>().isClickedflag == true){
+
+                    progressValue++;
+                }
+            
+            }
             yield return new WaitForSeconds(.2f);
         }
     }
@@ -100,12 +120,21 @@ public class masterManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        float step = speed * progressValue;
-        track.transform.position = Vector3.MoveTowards(track.transform.position, target.position, step);
 
+
+        var accel = controller.GetComponent<DebugMiraController>().accelDirection;
+           
+
+        //float step = speed * progressValue;
+        //track.transform.position = Vector3.MoveTowards(track.transform.position, target.position, step);
+        track.transform.position = new Vector3(0, 0, (-230 -(progressValue *1.7f))   );
+
+
+        debugText.text = progressValue.ToString();
 
         if ((progressValue ==1) && (prevFrame !=1))
         {
+            prevFrame = progressValue;
             /* Init 
              * 
              * kill all other audio
@@ -122,12 +151,23 @@ public class masterManager : MonoBehaviour {
             killAudio(audioStart);
             killAudio(audioFinish);
             PlayAudio(audioIntro);
-            prevFrame = progressValue;
+            PlayAudio(audioEvtStart);
+
+
             dialogText.text = textIntro;
 
-        }
 
-        if ((progressValue == 20)  && (prevFrame != 20))
+
+        }
+        if ((progressValue == 3) && (prevFrame != 3))
+        {
+            dialogText.text = "";
+        }
+        if ((progressValue == 15) && (prevFrame !=    15))
+        {
+            dialogText.text = "";
+        }
+        if ((progressValue == 9)  && (prevFrame != 9))
         {
             /* Start  
              * 
@@ -145,15 +185,32 @@ public class masterManager : MonoBehaviour {
             prevFrame = progressValue;
             killAudio(audioIntro);
             killAudio(audioFinish);
-            PlayAudio(audioStart);
-            PlayAudio(audioEvent); //add delay before maybe
+          
+            PlayAudio(audioEvtStart);
             dialogText.text = textStart;
 
         }
 
-            if ((progressValue ==50)  && (prevFrame != 50))// or interval
+
+        if ((progressValue == 11) && (prevFrame != 11))
         {
-            Debug.Log("50------------------------------------>Something Happens");
+            /* Start  
+             * 
+                kill all other audio
+                play audio start loop
+                hide all go
+                show start go
+            */
+
+            prevFrame = progressValue;
+            PlayAudio(audioStart);
+
+
+        }
+
+            if ((progressValue ==40)  && (prevFrame != 40))// or interval
+        {
+            Debug.Log("------------------------------------>Something Happens");
             /* event
              * 
                 play event audio ance
@@ -163,20 +220,48 @@ public class masterManager : MonoBehaviour {
             */
 
             prevFrame = progressValue;
-            dialogText.text = textIntro;
+            dialogText.text = "Watch Out for the car!!";
 
         }
 
-                if ((progressValue == 100) && (prevFrame != 100))
+        if ((progressValue == 39) && (prevFrame != 39))// or interval
+        {
+            Debug.Log("------------------------------------>Something Happens");
+            /* event
+             * 
+                play event audio ance
+                hide all go
+                show event go
+
+            */
+
+            prevFrame = progressValue;
+            dialogText.text = "Watch Out for the car!!";
+
+        }
+        if ((progressValue == 44) && (prevFrame != 44))// or interval
+        {
+
+            prevFrame = progressValue;
+            dialogText.text = "";
+
+        }
+
+
+
+                if ((progressValue == 99) && (prevFrame != 99))
         {
             Debug.Log("------------------------------------>Finish");
+            prevFrame = progressValue;
             killAudio(audioIntro);
             killAudio(audioStart);
             PlayAudio(audioFinish);
+            PlayAudio(audioEvtFinish);
+
             hideObj(objIntro);
             hideObj(objStart);
             showObj(objFinish);
-            prevFrame = progressValue;
+
             dialogText.text = textFinish;
             /* Finish 
              * 
@@ -192,30 +277,24 @@ public class masterManager : MonoBehaviour {
 
         float kEraseAccelerationThreshold = 2.0f;
 
-        var accel = Input.acceleration;
 
         var y = accel.y;
 
         var length = Mathf.Sqrt(y * y);
 
-        //Debug.Log("length" + length.ToString());
+        //debugText.text = kEraseAccelerationThreshold.ToString();
 
-        //debugText.text = length.ToString();
-        if (length >= kEraseAccelerationThreshold)
-        {
-
-            // DO STUFF HERE
-
-
-        }
+      
+       // debugText.text = controller.GetComponent<DebugMiraController>().isClickedflag.ToString();
 
 		
 	}
 
 
     public void OnSubmit()
+
     {
-        debugText.text = "yo yo";
+        //debugText.text = controller.isClickedflag;
     }
 
 
